@@ -1,19 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mycompany.gym2;
-
-/**
- *
- * @author DELL
- */
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.sql.*;
-
 
 public class JadwalKelasGym {
     public static void main(String[] args) {
@@ -22,9 +10,6 @@ public class JadwalKelasGym {
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // ========== KOMPONEN INPUT ==========
-        
-        // Label & Input ID Kelas (Auto-generated, disabled)
         JLabel lblIDKelas = new JLabel("ID Kelas:");
         lblIDKelas.setBounds(20, 20, 120, 25);
         frame.add(lblIDKelas);
@@ -35,7 +20,6 @@ public class JadwalKelasGym {
         txtIDKelas.setText("Auto");
         frame.add(txtIDKelas);
         
-        // Label & Input Nama Kelas
         JLabel lblNamaKelas = new JLabel("Nama Kelas:");
         lblNamaKelas.setBounds(20, 60, 120, 25);
         frame.add(lblNamaKelas);
@@ -44,7 +28,6 @@ public class JadwalKelasGym {
         txtNamaKelas.setBounds(150, 60, 200, 25);
         frame.add(txtNamaKelas);
         
-        // Label & ComboBox Hari
         JLabel lblHari = new JLabel("Hari:");
         lblHari.setBounds(20, 100, 120, 25);
         frame.add(lblHari);
@@ -54,7 +37,6 @@ public class JadwalKelasGym {
         cbHari.setBounds(150, 100, 200, 25);
         frame.add(cbHari);
         
-        // Label & Input Jam Kelas
         JLabel lblJamKelas = new JLabel("Jam Kelas:");
         lblJamKelas.setBounds(20, 140, 120, 25);
         frame.add(lblJamKelas);
@@ -67,7 +49,6 @@ public class JadwalKelasGym {
         lblFormatJam.setBounds(360, 140, 150, 25);
         frame.add(lblFormatJam);
         
-        // Label & ComboBox Instruktur
         JLabel lblInstruktur = new JLabel("Instruktur:");
         lblInstruktur.setBounds(20, 180, 120, 25);
         frame.add(lblInstruktur);
@@ -75,8 +56,6 @@ public class JadwalKelasGym {
         JComboBox<String> cbInstruktur = new JComboBox<>();
         cbInstruktur.setBounds(150, 180, 200, 25);
         frame.add(cbInstruktur);
-        
-        // ========== TOMBOL CRUD ==========
         
         JButton btnSimpan = new JButton("Simpan");
         btnSimpan.setBounds(20, 230, 100, 30);
@@ -98,8 +77,6 @@ public class JadwalKelasGym {
         btnRefresh.setBounds(460, 230, 100, 30);
         frame.add(btnRefresh);
         
-        // ========== JTABLE ==========
-        
         String[] kolom = {"ID Kelas", "Nama Kelas", "Hari", "Jam Kelas", "Instruktur", "ID Instruktur"};
         DefaultTableModel model = new DefaultTableModel(kolom, 0);
         JTable tableJadwal = new JTable(model);
@@ -107,13 +84,9 @@ public class JadwalKelasGym {
         scrollPane.setBounds(20, 280, 840, 260);
         frame.add(scrollPane);
         
-        // ========== KONEKSI DATABASE ==========
-        
         String url = "jdbc:postgresql://localhost:5432/gym_db";
         String user = "postgres";
         String password = "123";
-        
-        // ========== FUNGSI LOAD INSTRUKTUR KE COMBOBOX ==========
         
         Runnable loadInstruktur = () -> {
             cbInstruktur.removeAllItems();
@@ -137,17 +110,15 @@ public class JadwalKelasGym {
             }
         };
         
-        // ========== FUNGSI LOAD DATA KE JTABLE ==========
-        
         Runnable loadData = () -> {
             model.setRowCount(0);
             try {
                 Connection conn = DriverManager.getConnection(url, user, password);
                 String sql = "SELECT jk.id_kelas, jk.nama_kelas, jk.hari, jk.jam_kelas, " +
-                           "ig.nama AS nama_instruktur, jk.id_instruktur " +
-                           "FROM jadwal_kelas jk " +
-                           "JOIN instruktur_gym ig ON jk.id_instruktur = ig.id_instruktur " +
-                           "ORDER BY jk.id_kelas";
+                            "ig.nama AS nama_instruktur, jk.id_instruktur " +
+                            "FROM jadwal_kelas jk " +
+                            "JOIN instruktur_gym ig ON jk.id_instruktur = ig.id_instruktur " +
+                            "ORDER BY jk.id_kelas";
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
                 
@@ -171,11 +142,8 @@ public class JadwalKelasGym {
             }
         };
         
-        // Load data awal
         loadInstruktur.run();
         loadData.run();
-        
-        // ========== EVENT: SIMPAN DATA ==========
         
         btnSimpan.addActionListener(new ActionListener() {
             @Override
@@ -185,7 +153,6 @@ public class JadwalKelasGym {
                 String jamKelas = txtJamKelas.getText().trim();
                 String instrukturStr = (String) cbInstruktur.getSelectedItem();
                 
-                // Validasi input
                 if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null) {
                     JOptionPane.showMessageDialog(frame,
                         "Semua field harus diisi!",
@@ -193,13 +160,12 @@ public class JadwalKelasGym {
                     return;
                 }
                 
-                // Ambil ID instruktur dari ComboBox
                 int idInstruktur = Integer.parseInt(instrukturStr.split(" - ")[0]);
                 
                 try {
                     Connection conn = DriverManager.getConnection(url, user, password);
                     String sql = "INSERT INTO jadwal_kelas (nama_kelas, hari, jam_kelas, id_instruktur) " +
-                               "VALUES (?, ?, ?::time, ?)";
+                                "VALUES (?, ?, ?::time, ?)";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setString(1, namaKelas);
                     stmt.setString(2, hariKelas);
@@ -222,8 +188,6 @@ public class JadwalKelasGym {
                 }
             }
         });
-        
-        // ========== EVENT: UPDATE DATA ==========
         
         btnUpdate.addActionListener(new ActionListener() {
             @Override
@@ -253,7 +217,7 @@ public class JadwalKelasGym {
                 try {
                     Connection conn = DriverManager.getConnection(url, user, password);
                     String sql = "UPDATE jadwal_kelas SET nama_kelas=?, hari=?, jam_kelas=?::time, " +
-                               "id_instruktur=? WHERE id_kelas=?";
+                                "id_instruktur=? WHERE id_kelas=?";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setString(1, namaKelas);
                     stmt.setString(2, hariKelas);
@@ -277,8 +241,6 @@ public class JadwalKelasGym {
                 }
             }
         });
-        
-        // ========== EVENT: DELETE DATA ==========
         
         btnDelete.addActionListener(new ActionListener() {
             @Override
@@ -321,8 +283,6 @@ public class JadwalKelasGym {
             }
         });
         
-        // ========== EVENT: RESET FORM ==========
-        
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -335,8 +295,6 @@ public class JadwalKelasGym {
             }
         });
         
-        // ========== EVENT: REFRESH DATA ==========
-        
         btnRefresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -348,8 +306,6 @@ public class JadwalKelasGym {
             }
         });
         
-        // ========== EVENT: KLIK ROW TABLE ==========
-        
         tableJadwal.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -360,7 +316,6 @@ public class JadwalKelasGym {
                     cbHari.setSelectedItem(model.getValueAt(row, 2).toString());
                     txtJamKelas.setText(model.getValueAt(row, 3).toString());
                     
-                    // Set ComboBox instruktur
                     int idInstruktur = (int) model.getValueAt(row, 5);
                     String namaInstruktur = model.getValueAt(row, 4).toString();
                     cbInstruktur.setSelectedItem(idInstruktur + " - " + namaInstruktur);
