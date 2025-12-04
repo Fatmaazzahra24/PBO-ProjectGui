@@ -84,7 +84,7 @@ public class JadwalKelasGym {
         scrollPane.setBounds(20, 280, 840, 260);
         frame.add(scrollPane);
         
-        String url = "jdbc:postgresql://localhost:5432/gym_db"; // menyambungkan ke database
+        String url = "jdbc:postgresql://localhost:5432/db_gym"; // menyambungkan ke database
         String user = "postgres";
         String password = "123";
         
