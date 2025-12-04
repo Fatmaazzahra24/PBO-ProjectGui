@@ -1,16 +1,16 @@
-import javax.swing.*;
+import javax.swing.*; 
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.sql.*;
 
 public class JadwalKelasGym {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Form Jadwal Kelas Gym");
+        JFrame frame = new JFrame("Form Jadwal Kelas Gym"); 
         frame.setSize(900, 600);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        JLabel lblIDKelas = new JLabel("ID Kelas:");
+        JLabel lblIDKelas = new JLabel("ID Kelas:"); 
         lblIDKelas.setBounds(20, 20, 120, 25);
         frame.add(lblIDKelas);
         
@@ -52,14 +52,18 @@ public class JadwalKelasGym {
         JLabel lblInstruktur = new JLabel("Instruktur:");
         lblInstruktur.setBounds(20, 180, 120, 25);
         frame.add(lblInstruktur);
-        
+
         JComboBox<String> cbInstruktur = new JComboBox<>();
         cbInstruktur.setBounds(150, 180, 200, 25);
         frame.add(cbInstruktur);
         
-        JButton btnSimpan = new JButton("Simpan");
+        JButton btnSimpan = new JButton("Create");
         btnSimpan.setBounds(20, 230, 100, 30);
         frame.add(btnSimpan);
+
+        JButton btnReset = new JButton("Reset");
+        btnReset.setBounds(350, 230, 100, 30);
+        frame.add(btnReset);
         
         JButton btnUpdate = new JButton("Update");
         btnUpdate.setBounds(130, 230, 100, 30);
@@ -68,10 +72,6 @@ public class JadwalKelasGym {
         JButton btnDelete = new JButton("Delete");
         btnDelete.setBounds(240, 230, 100, 30);
         frame.add(btnDelete);
-        
-        JButton btnReset = new JButton("Reset");
-        btnReset.setBounds(350, 230, 100, 30);
-        frame.add(btnReset);
         
         JButton btnRefresh = new JButton("Refresh");
         btnRefresh.setBounds(460, 230, 100, 30);
@@ -84,7 +84,7 @@ public class JadwalKelasGym {
         scrollPane.setBounds(20, 280, 840, 260);
         frame.add(scrollPane);
         
-        String url = "jdbc:postgresql://localhost:5432/gym_db";
+        String url = "jdbc:postgresql://localhost:5432/gym_db"; // menyambungkan ke database
         String user = "postgres";
         String password = "123";
         
@@ -114,11 +114,7 @@ public class JadwalKelasGym {
             model.setRowCount(0);
             try {
                 Connection conn = DriverManager.getConnection(url, user, password);
-                String sql = "SELECT jk.id_kelas, jk.nama_kelas, jk.hari, jk.jam_kelas, " +
-                            "ig.nama AS nama_instruktur, jk.id_instruktur " +
-                            "FROM jadwal_kelas jk " +
-                            "JOIN instruktur_gym ig ON jk.id_instruktur = ig.id_instruktur " +
-                            "ORDER BY jk.id_kelas";
+                String sql = "SELECT jk.id_kelas, jk.nama_kelas, jk.hari, jk.jam_kelas, " + "ig.nama AS nama_instruktur, jk.id_instruktur " + "FROM jadwal_kelas jk " + "JOIN instruktur_gym ig ON jk.id_instruktur = ig.id_instruktur " + "ORDER BY jk.id_kelas";
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
                 
@@ -154,9 +150,7 @@ public class JadwalKelasGym {
                 String instrukturStr = (String) cbInstruktur.getSelectedItem();
                 
                 if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null) {
-                    JOptionPane.showMessageDialog(frame,
-                        "Semua field harus diisi!",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 
@@ -164,8 +158,7 @@ public class JadwalKelasGym {
                 
                 try {
                     Connection conn = DriverManager.getConnection(url, user, password);
-                    String sql = "INSERT INTO jadwal_kelas (nama_kelas, hari, jam_kelas, id_instruktur) " +
-                                "VALUES (?, ?, ?::time, ?)";
+                    String sql = "INSERT INTO jadwal_kelas (nama_kelas, hari, jam_kelas, id_instruktur) " + "VALUES (?, ?, ?::time, ?)";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setString(1, namaKelas);
                     stmt.setString(2, hariKelas);
@@ -174,17 +167,12 @@ public class JadwalKelasGym {
                     stmt.executeUpdate();
                     conn.close();
                     
-                    JOptionPane.showMessageDialog(frame,
-                        "Jadwal kelas berhasil disimpan!",
-                        "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                    
+                    JOptionPane.showMessageDialog(frame, "Jadwal kelas berhasil disimpan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     loadData.run();
                     btnReset.doClick();
                     
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(frame,
-                        "Gagal menyimpan data!\n" + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Gagal menyimpan data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -199,16 +187,12 @@ public class JadwalKelasGym {
                 String instrukturStr = (String) cbInstruktur.getSelectedItem();
                 
                 if (idKelas.equals("Auto") || idKelas.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame,
-                        "Pilih data dari tabel terlebih dahulu!",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Pilih data dari tabel terlebih dahulu!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 
                 if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null) {
-                    JOptionPane.showMessageDialog(frame,
-                        "Semua field harus diisi!",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 
@@ -216,8 +200,7 @@ public class JadwalKelasGym {
                 
                 try {
                     Connection conn = DriverManager.getConnection(url, user, password);
-                    String sql = "UPDATE jadwal_kelas SET nama_kelas=?, hari=?, jam_kelas=?::time, " +
-                                "id_instruktur=? WHERE id_kelas=?";
+                    String sql = "UPDATE jadwal_kelas SET nama_kelas=?, hari=?, jam_kelas=?::time, " + "id_instruktur=? WHERE id_kelas=?";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setString(1, namaKelas);
                     stmt.setString(2, hariKelas);
@@ -227,17 +210,13 @@ public class JadwalKelasGym {
                     stmt.executeUpdate();
                     conn.close();
                     
-                    JOptionPane.showMessageDialog(frame,
-                        "Data berhasil diupdate!",
-                        "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Data berhasil diupdate!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     
                     loadData.run();
                     btnReset.doClick();
                     
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(frame,
-                        "Gagal update data!\n" + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Gagal update data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -248,15 +227,11 @@ public class JadwalKelasGym {
                 String idKelas = txtIDKelas.getText().trim();
                 
                 if (idKelas.equals("Auto") || idKelas.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame,
-                        "Pilih data dari tabel terlebih dahulu!",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Pilih data dari tabel terlebih dahulu!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 
-                int confirm = JOptionPane.showConfirmDialog(frame,
-                    "Yakin ingin menghapus data ini?",
-                    "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(frame, "Yakin ingin menghapus data ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
                 
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
@@ -267,17 +242,13 @@ public class JadwalKelasGym {
                         stmt.executeUpdate();
                         conn.close();
                         
-                        JOptionPane.showMessageDialog(frame,
-                            "Data berhasil dihapus!",
-                            "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                         
                         loadData.run();
                         btnReset.doClick();
                         
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(frame,
-                            "Gagal menghapus data!\n" + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, "Gagal menghapus data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -300,9 +271,7 @@ public class JadwalKelasGym {
             public void actionPerformed(ActionEvent e) {
                 loadInstruktur.run();
                 loadData.run();
-                JOptionPane.showMessageDialog(frame,
-                    "Data berhasil direfresh!",
-                    "Info", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Data berhasil direfresh!", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         
