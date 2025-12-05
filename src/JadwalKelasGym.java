@@ -10,7 +10,7 @@ public class JadwalKelasGym {
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        JLabel lblIDKelas = new JLabel("ID Kelas:"); 
+        JLabel lblIDKelas = new JLabel("ID KELAS"); 
         lblIDKelas.setBounds(20, 20, 120, 25);
         frame.add(lblIDKelas);
         
@@ -20,7 +20,7 @@ public class JadwalKelasGym {
         txtIDKelas.setText("Auto");
         frame.add(txtIDKelas);
         
-        JLabel lblNamaKelas = new JLabel("Nama Kelas:");
+        JLabel lblNamaKelas = new JLabel("NAMA KELAS");
         lblNamaKelas.setBounds(20, 60, 120, 25);
         frame.add(lblNamaKelas);
         
@@ -28,16 +28,16 @@ public class JadwalKelasGym {
         txtNamaKelas.setBounds(150, 60, 200, 25);
         frame.add(txtNamaKelas);
         
-        JLabel lblHari = new JLabel("Hari:");
+        JLabel lblHari = new JLabel("HARI");
         lblHari.setBounds(20, 100, 120, 25);
         frame.add(lblHari);
         
-        String[] hari = {"Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"};
+        String[] hari = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"};
         JComboBox<String> cbHari = new JComboBox<>(hari);
         cbHari.setBounds(150, 100, 200, 25);
         frame.add(cbHari);
         
-        JLabel lblJamKelas = new JLabel("Jam Kelas:");
+        JLabel lblJamKelas = new JLabel("WAKTU");
         lblJamKelas.setBounds(20, 140, 120, 25);
         frame.add(lblJamKelas);
         
@@ -49,7 +49,7 @@ public class JadwalKelasGym {
         lblFormatJam.setBounds(360, 140, 150, 25);
         frame.add(lblFormatJam);
         
-        JLabel lblInstruktur = new JLabel("Instruktur:");
+        JLabel lblInstruktur = new JLabel("INSTRUKTUR");
         lblInstruktur.setBounds(20, 180, 120, 25);
         frame.add(lblInstruktur);
 
@@ -57,27 +57,19 @@ public class JadwalKelasGym {
         cbInstruktur.setBounds(150, 180, 200, 25);
         frame.add(cbInstruktur);
         
-        JButton btnSimpan = new JButton("Create");
+        JButton btnSimpan = new JButton("CREATE");
         btnSimpan.setBounds(20, 230, 100, 30);
         frame.add(btnSimpan);
-
-        JButton btnReset = new JButton("Reset");
-        btnReset.setBounds(350, 230, 100, 30);
-        frame.add(btnReset);
         
-        JButton btnUpdate = new JButton("Update");
+        JButton btnUpdate = new JButton("UPDATE");
         btnUpdate.setBounds(130, 230, 100, 30);
         frame.add(btnUpdate);
         
-        JButton btnDelete = new JButton("Delete");
+        JButton btnDelete = new JButton("DELETE");
         btnDelete.setBounds(240, 230, 100, 30);
         frame.add(btnDelete);
         
-        JButton btnRefresh = new JButton("Refresh");
-        btnRefresh.setBounds(460, 230, 100, 30);
-        frame.add(btnRefresh);
-        
-        String[] kolom = {"ID Kelas", "Nama Kelas", "Hari", "Jam Kelas", "Instruktur", "ID Instruktur"};
+        String[] kolom = {"ID Kelas", "Nama Kelas", "Hari", "Waktu", "Instruktur", "ID Instruktur"};
         DefaultTableModel model = new DefaultTableModel(kolom, 0);
         JTable tableJadwal = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableJadwal);
@@ -105,8 +97,8 @@ public class JadwalKelasGym {
                 conn.close();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame, 
-                    "Gagal memuat data instruktur!\n" + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                    "Belum berhasil, silahkan cek kembali!\n" + ex.getMessage(),
+                    "GAGAL!!!", JOptionPane.ERROR_MESSAGE);
             }
         };
         
@@ -169,7 +161,6 @@ public class JadwalKelasGym {
                     
                     JOptionPane.showMessageDialog(frame, "Jadwal kelas berhasil disimpan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     loadData.run();
-                    btnReset.doClick();
                     
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(frame, "Gagal menyimpan data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -212,9 +203,6 @@ public class JadwalKelasGym {
                     
                     JOptionPane.showMessageDialog(frame, "Data berhasil diupdate!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     
-                    loadData.run();
-                    btnReset.doClick();
-                    
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(frame, "Gagal update data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -244,34 +232,10 @@ public class JadwalKelasGym {
                         
                         JOptionPane.showMessageDialog(frame, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                         
-                        loadData.run();
-                        btnReset.doClick();
-                        
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame, "Gagal menghapus data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-            }
-        });
-        
-        btnReset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                txtIDKelas.setText("Auto");
-                txtNamaKelas.setText("");
-                cbHari.setSelectedIndex(0);
-                txtJamKelas.setText("");
-                cbInstruktur.setSelectedIndex(0);
-                tableJadwal.clearSelection();
-            }
-        });
-        
-        btnRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loadInstruktur.run();
-                loadData.run();
-                JOptionPane.showMessageDialog(frame, "Data berhasil direfresh!", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         
