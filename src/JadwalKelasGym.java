@@ -10,11 +10,11 @@ public class JadwalKelasGym {
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        JLabel lblIDKelas = new JLabel("ID KELAS"); 
+        JLabel lblIDKelas = new JLabel("ID KELAS");
         lblIDKelas.setBounds(20, 20, 120, 25);
         frame.add(lblIDKelas);
         
-        JTextField txtIDKelas = new JTextField();
+        JTextField txtIDKelas = new JTextField(); 
         txtIDKelas.setBounds(150, 20, 200, 25);
         txtIDKelas.setEditable(false);
         txtIDKelas.setText("Auto");
@@ -32,7 +32,7 @@ public class JadwalKelasGym {
         lblHari.setBounds(20, 100, 120, 25);
         frame.add(lblHari);
         
-        String[] hari = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"};
+        String[] hari = {"SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"};
         JComboBox<String> cbHari = new JComboBox<>(hari);
         cbHari.setBounds(150, 100, 200, 25);
         frame.add(cbHari);
