@@ -54,7 +54,6 @@ public class FormRegistrasiGym {
         btnReset.setBounds(210, 150, 170, 30);
         frame.add(btnReset);
 
-        // ➤ TOMBOL DELETE DITAMBAHKAN DI SINI
         JButton btnDelete = new JButton("Delete");
         btnDelete.setBounds(400, 150, 170, 30);
         frame.add(btnDelete);
@@ -129,7 +128,6 @@ public class FormRegistrasiGym {
             }
         });
 
-        // ➤ EVENT TOMBOL DELETE DITAMBAHKAN DI SINI
         btnDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
