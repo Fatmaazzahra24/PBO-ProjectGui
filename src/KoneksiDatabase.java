@@ -1,3 +1,5 @@
+package src;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,7 +11,7 @@ public class KoneksiDatabase {
     // dan nilainya tidak bisa diubah (final).
     public static final String URL = "jdbc:postgresql://localhost:5432/db_gym";
     public static final String USER = "postgres";
-    public static final String PASS = "admin";
+    public static final String PASS = "bakmi2";
 
     /**
      * 2. Metode Public Static untuk Mendapatkan Koneksi
