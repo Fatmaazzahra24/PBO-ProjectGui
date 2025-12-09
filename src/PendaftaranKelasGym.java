@@ -17,7 +17,7 @@ public class PendaftaranKelasGym extends JFrame {
     private DefaultTableModel modelTabel;
     
     // Deklarasi tombol
-    private JButton btnSimpan, btnUpdate, btnHapus, btnRefresh, btnReset, btnKeluar;
+    private JButton btnSimpan, btnUpdate, btnHapus, btnReset, btnKeluar;
 
     private Connection koneksi;
 
@@ -126,14 +126,12 @@ public class PendaftaranKelasGym extends JFrame {
         btnSimpan  = buatButton("Simpan",  new Color(46, 204, 113));
         btnUpdate  = buatButton("Update",  new Color(52, 152, 219));
         btnHapus   = buatButton("Delete",  new Color(231, 76, 60));
-        btnRefresh = buatButton("Refresh", new Color(241, 196, 15));
         btnReset   = buatButton("Reset",   new Color(189, 195, 199));
         btnKeluar  = buatButton("Keluar",  new Color(52, 73, 94));
 
         panelTombol.add(btnSimpan);
         panelTombol.add(btnUpdate);
         panelTombol.add(btnHapus);
-        panelTombol.add(btnRefresh);
         panelTombol.add(btnReset);
         panelTombol.add(btnKeluar);
     }
@@ -180,10 +178,7 @@ public class PendaftaranKelasGym extends JFrame {
         return btn;
     }
 
-
-
     private void buatTabelData() {
-
         String[] kolom = {
             "ID", "ID Member", "Nama Member",
             "ID Kelas", "Info Kelas", "Tanggal", "Catatan"
@@ -212,8 +207,8 @@ public class PendaftaranKelasGym extends JFrame {
         tabelPendaftaran.getColumnModel().getColumn(5).setCellRenderer(center);
 
         DefaultTableCellRenderer header = new DefaultTableCellRenderer();
-        header.setFont(new Font("SansSerif", Font.BOLD, 12));
         header.setBackground(new Color(52, 73, 94));
+        header.setFont(new Font("SansSerif", Font.BOLD, 12));
         header.setForeground(Color.WHITE);
         header.setHorizontalAlignment(JLabel.CENTER);
 
@@ -244,8 +239,7 @@ public class PendaftaranKelasGym extends JFrame {
 
         btnSimpan.addActionListener(e -> simpanDataBaru());
         btnUpdate.addActionListener(e -> perbaruiData());
-        btnHapus.addActionListener(e -> hapusData());
-        btnRefresh.addActionListener(e -> muatDataTabel());
+        btnHapus.addActionListener(e -> hapusData());;
         btnReset.addActionListener(e -> bersihkanForm());
         btnKeluar.addActionListener(e -> konfirmasiKeluar());
 
@@ -309,7 +303,10 @@ public class PendaftaranKelasGym extends JFrame {
     private void muatDataMember() {
         try {
             cbMember.removeAllItems();
-            String sql = "SELECT id_member, nama, paket FROM member_gym ORDER BY nama";
+            cbMember.addItem(" Pilih Member ");
+
+            String sql = "SELECT id_member, nama, paket FROM member_gym ORDER BY id_member ASC";
+            
             Statement perintah = koneksi.createStatement();
             ResultSet hasil = perintah.executeQuery(sql);
             
@@ -321,6 +318,8 @@ public class PendaftaranKelasGym extends JFrame {
             
             hasil.close();
             perintah.close();
+
+            cbMember.setSelectedIndex(0);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this,
                 "Gagal memuat data tabel!\n" + ex.getMessage(),
@@ -332,6 +331,7 @@ public class PendaftaranKelasGym extends JFrame {
     private void muatDataKelas() {
         try {
             cbKelas.removeAllItems();
+            cbKelas.addItem(" Pilih Kelas ");
 
             String sql =
                 "SELECT jk.id_kelas, jk.nama_kelas, jk.hari, " +
@@ -339,7 +339,7 @@ public class PendaftaranKelasGym extends JFrame {
                 "ig.nama AS nama_instruktur " +
                 "FROM jadwal_kelas jk " +
                 "JOIN instruktur_gym ig ON jk.id_instruktur = ig.id_instruktur " +
-                "ORDER BY jk.nama_kelas";
+                "ORDER BY jk.id_kelas ASC";
 
             Statement perintah = koneksi.createStatement();
             ResultSet hasil = perintah.executeQuery(sql);
@@ -356,6 +356,8 @@ public class PendaftaranKelasGym extends JFrame {
 
             hasil.close();
             perintah.close();
+
+            cbKelas.setSelectedIndex(0);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this,
                 "Gagal memuat data kelas!\n" + ex.getMessage(),
@@ -365,7 +367,6 @@ public class PendaftaranKelasGym extends JFrame {
     }
 
     private void muatDataTabel() {
-
         try {
             modelTabel.setRowCount(0);
 
@@ -408,7 +409,7 @@ public class PendaftaranKelasGym extends JFrame {
     }
 
     private boolean validasiInput() {
-        if (cbMember.getSelectedItem() == null) {
+        if (cbMember.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(this,
                 "Pilih member terlebih dahulu!",
                 "Validasi",
@@ -416,7 +417,7 @@ public class PendaftaranKelasGym extends JFrame {
             return false;
         }
 
-        if (cbKelas.getSelectedItem() == null) {
+        if (cbKelas.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(this,
                 "Pilih kelas terlebih dahulu!",
                 "Validasi",
@@ -445,11 +446,18 @@ public class PendaftaranKelasGym extends JFrame {
     }
 
     private int getIdMemberTerpilih() {
+        if (cbMember.getSelectedIndex() <= 0) {
+            return -1;
+        }
         String selected = cbMember.getSelectedItem().toString();
         return Integer.parseInt(selected.split(" - ")[0]);
     }
 
+
     private int getIdKelasTerpilih() {
+        if (cbKelas.getSelectedIndex() <= 0) {
+            return -1;
+        }
         String selected = cbKelas.getSelectedItem().toString();
         return Integer.parseInt(selected.split(" - ")[0]);
     }
@@ -472,7 +480,7 @@ public class PendaftaranKelasGym extends JFrame {
             pstmt.close();
             
             JOptionPane.showMessageDialog(this,
-                "✓ Pendaftaran kelas berhasil disimpan!",
+                "Pendaftaran kelas berhasil disimpan!",
                 "Sukses",
                 JOptionPane.INFORMATION_MESSAGE);
             
@@ -511,7 +519,7 @@ public class PendaftaranKelasGym extends JFrame {
             
             if (result > 0) {
                 JOptionPane.showMessageDialog(this,
-                    "✓ Data berhasil diupdate!",
+                    "Data berhasil diupdate!",
                     "Sukses",
                     JOptionPane.INFORMATION_MESSAGE);
                 muatDataTabel();
@@ -548,7 +556,7 @@ public class PendaftaranKelasGym extends JFrame {
                 
                 if (result > 0) {
                     JOptionPane.showMessageDialog(this,
-                        "✓ Data berhasil dihapus!",
+                        "Data berhasil dihapus!",
                         "Sukses",
                         JOptionPane.INFORMATION_MESSAGE);
                     muatDataTabel();
