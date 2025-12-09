@@ -1,10 +1,11 @@
 package src;
 
-import javax.swing.*; 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.awt.Color;
 import java.sql.*;
+import src.KoneksiDatabase;
 
 public class JadwalKelasGym {
     public static void main(String[] args) {
@@ -90,15 +91,11 @@ public class JadwalKelasGym {
         scrollPane.setBounds(20, 280, 840, 260);
         frame.add(scrollPane);
         
-        String url = "jdbc:postgresql://localhost:5432/db_gym"; // menyambungkan ke database
-        String user = "postgres";
-        String password = "123";
-        
         Runnable loadInstruktur = () -> {
             cbInstruktur.removeAllItems();
             cbInstruktur.addItem("Pilih Instruktur");
             try {
-                Connection conn = DriverManager.getConnection(url, user, password);
+                Connection conn = KoneksiDatabase.getConnection();
                 String sql = "SELECT id_instruktur, nama FROM instruktur_gym ORDER BY nama";
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
@@ -120,7 +117,7 @@ public class JadwalKelasGym {
         Runnable loadData = () -> {
             model.setRowCount(0);
             try {
-                Connection conn = DriverManager.getConnection(url, user, password);
+                Connection conn = KoneksiDatabase.getConnection();
                 String sql = "SELECT jk.id_kelas, jk.nama_kelas, jk.hari, jk.jam_kelas, " + "ig.nama AS nama_instruktur, jk.id_instruktur " + "FROM jadwal_kelas jk " + "JOIN instruktur_gym ig ON jk.id_instruktur = ig.id_instruktur " + "ORDER BY jk.id_kelas";
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
@@ -165,7 +162,7 @@ public class JadwalKelasGym {
                 int idInstruktur = Integer.parseInt(instrukturStr.split(" - ")[0]);
                 
                 try {
-                    Connection conn = DriverManager.getConnection(url, user, password);
+                    Connection conn = KoneksiDatabase.getConnection();
                     String sql = "INSERT INTO jadwal_kelas (nama_kelas, hari, jam_kelas, id_instruktur) " + "VALUES (?, ?, ?::time, ?)";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setString(1, namaKelas);
@@ -214,7 +211,7 @@ public class JadwalKelasGym {
                 int idInstruktur = Integer.parseInt(instrukturStr.split(" - ")[0]);
                 
                 try {
-                    Connection conn = DriverManager.getConnection(url, user, password);
+                    Connection conn = KoneksiDatabase.getConnection();
                     String sql = "UPDATE jadwal_kelas SET nama_kelas=?, hari=?, jam_kelas=?::time, " + "id_instruktur=? WHERE id_kelas=?";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setString(1, namaKelas);
@@ -248,7 +245,7 @@ public class JadwalKelasGym {
                 
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
-                        Connection conn = DriverManager.getConnection(url, user, password);
+                        Connection conn = KoneksiDatabase.getConnection();
                         String sql = "DELETE FROM jadwal_kelas WHERE id_kelas=?";
                         PreparedStatement stmt = conn.prepareStatement(sql);
                         stmt.setInt(1, Integer.parseInt(idKelas));
