@@ -9,22 +9,27 @@ import src.KoneksiDatabase;
 
 public class JadwalKelasGym {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Form 3 – Jadwal Kelas Gym"); 
-        frame.setSize(900, 600);
-        frame.setLayout(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Color creamMuda = new Color(250, 240, 230);
-        frame.getContentPane().setBackground(creamMuda);
-        
+        Color CREAM   = new Color(250, 240, 230);
+        Color HIJAU   = new Color(16, 185, 129);
+        Color ORANGE  = new Color(251, 146, 60);
+        Color MERAH   = new Color(244, 63, 94);
+        Color TEXT    = Color.WHITE;
+
+        JFrame frame = new JFrame("Form 3 – Jadwal Kelas Gym"); 
+        frame.setSize(650, 500);
+        frame.setLayout(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);  
+        frame.getContentPane().setBackground(CREAM);
+
         JLabel lblIDKelas = new JLabel("ID KELAS");
         lblIDKelas.setBounds(20, 20, 120, 25);
         frame.add(lblIDKelas);
         
-        JTextField txtIDKelas = new JTextField(); 
+        JTextField txtIDKelas = new JTextField("Auto"); 
         txtIDKelas.setBounds(150, 20, 200, 25);
         txtIDKelas.setEditable(false);
-        txtIDKelas.setText("Auto");
         frame.add(txtIDKelas);
         
         JLabel lblNamaKelas = new JLabel("NAMA KELAS");
@@ -41,9 +46,9 @@ public class JadwalKelasGym {
         
         String[] hari = {"SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"};
         JComboBox<String> cbHari = new JComboBox<>(hari);
-        cbHari.setBounds(150, 100, 200, 25);
         cbHari.insertItemAt("Pilih Hari", 0);
         cbHari.setSelectedIndex(0);
+        cbHari.setBounds(150, 100, 200, 25);
         frame.add(cbHari);
         
         JLabel lblJamKelas = new JLabel("WAKTU");
@@ -68,28 +73,29 @@ public class JadwalKelasGym {
         
         JButton btnSimpan = new JButton("CREATE");
         btnSimpan.setBounds(20, 230, 100, 30);
-        btnSimpan.setBackground(new Color(16, 185, 129)); // Hijau Emerald
-        btnSimpan.setForeground(Color.WHITE);
+        btnSimpan.setBackground(HIJAU); 
+        btnSimpan.setForeground(TEXT);
         frame.add(btnSimpan);
         
         JButton btnUpdate = new JButton("UPDATE");
         btnUpdate.setBounds(130, 230, 100, 30);
-        btnUpdate.setBackground(new Color(251, 146, 60)); // Orange
-        btnUpdate.setForeground(Color.WHITE);
+        btnUpdate.setBackground(ORANGE); 
+        btnUpdate.setForeground(TEXT);
         frame.add(btnUpdate);
         
         JButton btnDelete = new JButton("DELETE");
         btnDelete.setBounds(240, 230, 100, 30);
-        btnDelete.setBackground(new Color(244, 63, 94)); // Merah Rose
-        btnDelete.setForeground(Color.WHITE);
+        btnDelete.setBackground(MERAH); 
+        btnDelete.setForeground(TEXT);
         frame.add(btnDelete);
         
         String[] kolom = {"ID Kelas", "Nama Kelas", "Hari", "Waktu", "Instruktur", "ID Instruktur"};
         DefaultTableModel model = new DefaultTableModel(kolom, 0);
         JTable tableJadwal = new JTable(model);
-        JScrollPane scrollPane = new JScrollPane(tableJadwal);
-        scrollPane.setBounds(20, 280, 840, 260);
-        frame.add(scrollPane);
+
+        JScrollPane scroll = new JScrollPane(tableJadwal);
+        scroll.setBounds(20, 280, 600, 170);
+        frame.add(scroll);
         
         Runnable loadInstruktur = () -> {
             cbInstruktur.removeAllItems();
@@ -97,23 +103,17 @@ public class JadwalKelasGym {
             try {
                 Connection conn = KoneksiDatabase.getConnection();
                 String sql = "SELECT id_instruktur, nama FROM instruktur_gym ORDER BY nama";
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql);
+                ResultSet rs = conn.createStatement().executeQuery(sql);
                 
                 while (rs.next()) {
-                    int id = rs.getInt("id_instruktur");
-                    String nama = rs.getString("nama");
-                    cbInstruktur.addItem(id + " - " + nama);
+                    cbInstruktur.addItem(rs.getInt("id_instruktur") + " - " + rs.getString("nama"));
                 }
-                
                 conn.close();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, 
-                    "Belum berhasil, silahkan cek kembali!\n" + ex.getMessage(),
-                    "GAGAL!!!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Belum berhasil\n" + ex.getMessage(),"ERROR", JOptionPane.ERROR_MESSAGE);
             }
         };
-        
+
         Runnable loadData = () -> {
             model.setRowCount(0);
             try {
@@ -123,22 +123,19 @@ public class JadwalKelasGym {
                 ResultSet rs = stmt.executeQuery(sql);
                 
                 while (rs.next()) {
-                    Object[] row = {
+                    model.addRow(new Object[]{
                         rs.getInt("id_kelas"),
                         rs.getString("nama_kelas"),
                         rs.getString("hari"),
                         rs.getString("jam_kelas"),
                         rs.getString("nama_instruktur"),
                         rs.getInt("id_instruktur")
-                    };
-                    model.addRow(row);
+                    });
                 }
-                
                 conn.close();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame, 
-                    "Gagal memuat data jadwal!\n" + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                    "Gagal memuat data jadwal!\n" + ex.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
             }
         };
         
@@ -153,24 +150,16 @@ public class JadwalKelasGym {
                 String jamKelas = txtJamKelas.getText().trim();
                 String instrukturStr = (String) cbInstruktur.getSelectedItem();
                 
-                if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null || 
-                    instrukturStr.equals("Pilih Instruktur") || hariKelas.equals("Pilih Hari")) {
+                if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null || instrukturStr.equals("Pilih Instruktur") || hariKelas.equals("Pilih Hari")) {
                     JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                if (jamKelas.length() != 8 || 
-    jamKelas.charAt(2) != ':' || 
-    jamKelas.charAt(5) != ':') {
+                if (jamKelas.length() != 8 || jamKelas.charAt(2) != ':' || jamKelas.charAt(5) != ':') {
+                    JOptionPane.showMessageDialog(frame,"Format waktu harus HH:MM:SS, contoh 07:30:00","Format Waktu Salah", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-    JOptionPane.showMessageDialog(frame,
-        "Format waktu harus HH:MM:SS, contoh 07:30:00",
-        "Format Waktu Salah",
-        JOptionPane.ERROR_MESSAGE);
-    return;
-}
-
-                
                 int idInstruktur = Integer.parseInt(instrukturStr.split(" - ")[0]);
                 
                 try {
@@ -186,8 +175,6 @@ public class JadwalKelasGym {
                     
                     JOptionPane.showMessageDialog(frame, "Jadwal kelas berhasil disimpan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     loadData.run();
-                    
-                    // Reset form
                     txtNamaKelas.setText("");
                     txtJamKelas.setText("");
                     cbHari.setSelectedIndex(0);
@@ -214,29 +201,22 @@ public class JadwalKelasGym {
                     return;
                 }
                 
-                if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null || 
-                    instrukturStr.equals("Pilih Instruktur") || hariKelas.equals("Pilih Hari")) {
-                    JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
+                if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null || instrukturStr.equals("Pilih Instruktur") || hariKelas.equals("Pilih Hari")) {
+                    JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                if (jamKelas.length() != 8 || 
-    jamKelas.charAt(2) != ':' || 
-    jamKelas.charAt(5) != ':') {
-
-    JOptionPane.showMessageDialog(frame,
-        "Format waktu harus HH:MM:SS, contoh 07:30:00",
-        "Format Waktu Salah",
-        JOptionPane.ERROR_MESSAGE);
-    return;
-}
-
+                if (jamKelas.length() != 8 || jamKelas.charAt(2) != ':' || jamKelas.charAt(5) != ':') {
+                    JOptionPane.showMessageDialog(frame,"Format waktu harus HH:MM:SS, contoh 07:30:00","Format Waktu Salah", JOptionPane.ERROR_MESSAGE);
+                    return;
+            }
                 
                 int idInstruktur = Integer.parseInt(instrukturStr.split(" - ")[0]);
                 
                 try {
                     Connection conn = KoneksiDatabase.getConnection();
                     String sql = "UPDATE jadwal_kelas SET nama_kelas=?, hari=?, jam_kelas=?::time, " + "id_instruktur=? WHERE id_kelas=?";
+
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setString(1, namaKelas);
                     stmt.setString(2, hariKelas);
@@ -248,9 +228,8 @@ public class JadwalKelasGym {
                     
                     JOptionPane.showMessageDialog(frame, "Data berhasil diupdate!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     loadData.run();
-                    
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(frame, "Gagal update data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Gagal update data!\n" + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -261,7 +240,7 @@ public class JadwalKelasGym {
                 String idKelas = txtIDKelas.getText().trim();
                 
                 if (idKelas.equals("Auto") || idKelas.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "Pilih data dari tabel terlebih dahulu!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Pilih data dari tabel terlebih dahulu!", "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 
@@ -271,6 +250,7 @@ public class JadwalKelasGym {
                     try {
                         Connection conn = KoneksiDatabase.getConnection();
                         String sql = "DELETE FROM jadwal_kelas WHERE id_kelas=?";
+
                         PreparedStatement stmt = conn.prepareStatement(sql);
                         stmt.setInt(1, Integer.parseInt(idKelas));
                         stmt.executeUpdate();
@@ -278,8 +258,6 @@ public class JadwalKelasGym {
                         
                         JOptionPane.showMessageDialog(frame, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                         loadData.run();
-                        
-                        // Reset form
                         txtIDKelas.setText("Auto");
                         txtNamaKelas.setText("");
                         txtJamKelas.setText("");
