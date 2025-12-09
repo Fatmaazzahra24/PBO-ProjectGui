@@ -41,6 +41,8 @@ public class JadwalKelasGym {
         String[] hari = {"SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"};
         JComboBox<String> cbHari = new JComboBox<>(hari);
         cbHari.setBounds(150, 100, 200, 25);
+        cbHari.insertItemAt("Pilih Hari", 0);
+        cbHari.setSelectedIndex(0);
         frame.add(cbHari);
         
         JLabel lblJamKelas = new JLabel("WAKTU");
@@ -64,22 +66,22 @@ public class JadwalKelasGym {
         frame.add(cbInstruktur);
         
         JButton btnSimpan = new JButton("CREATE");
-btnSimpan.setBounds(20, 230, 100, 30);
-btnSimpan.setBackground(new Color(16, 185, 129)); // Hijau Emerald
-btnSimpan.setForeground(Color.WHITE);
-frame.add(btnSimpan);
+        btnSimpan.setBounds(20, 230, 100, 30);
+        btnSimpan.setBackground(new Color(16, 185, 129)); // Hijau Emerald
+        btnSimpan.setForeground(Color.WHITE);
+        frame.add(btnSimpan);
         
         JButton btnUpdate = new JButton("UPDATE");
-btnUpdate.setBounds(130, 230, 100, 30);
-btnUpdate.setBackground(new Color(251, 146, 60)); // Orange
-btnUpdate.setForeground(Color.WHITE);
-frame.add(btnUpdate);
+        btnUpdate.setBounds(130, 230, 100, 30);
+        btnUpdate.setBackground(new Color(251, 146, 60)); // Orange
+        btnUpdate.setForeground(Color.WHITE);
+        frame.add(btnUpdate);
         
         JButton btnDelete = new JButton("DELETE");
-btnDelete.setBounds(240, 230, 100, 30);
-btnDelete.setBackground(new Color(244, 63, 94)); // Merah Rose
-btnDelete.setForeground(Color.WHITE);
-frame.add(btnDelete);
+        btnDelete.setBounds(240, 230, 100, 30);
+        btnDelete.setBackground(new Color(244, 63, 94)); // Merah Rose
+        btnDelete.setForeground(Color.WHITE);
+        frame.add(btnDelete);
         
         String[] kolom = {"ID Kelas", "Nama Kelas", "Hari", "Waktu", "Instruktur", "ID Instruktur"};
         DefaultTableModel model = new DefaultTableModel(kolom, 0);
@@ -94,6 +96,7 @@ frame.add(btnDelete);
         
         Runnable loadInstruktur = () -> {
             cbInstruktur.removeAllItems();
+            cbInstruktur.addItem("Pilih Instruktur");
             try {
                 Connection conn = DriverManager.getConnection(url, user, password);
                 String sql = "SELECT id_instruktur, nama FROM instruktur_gym ORDER BY nama";
@@ -149,11 +152,12 @@ frame.add(btnDelete);
             @Override
             public void actionPerformed(ActionEvent e) {
                 String namaKelas = txtNamaKelas.getText().trim();
-                String hariKelas = cbHari.getSelectedItem().toString();
+                String hariKelas = (String) cbHari.getSelectedItem();
                 String jamKelas = txtJamKelas.getText().trim();
                 String instrukturStr = (String) cbInstruktur.getSelectedItem();
                 
-                if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null) {
+                if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null || 
+                    instrukturStr.equals("Pilih Instruktur") || hariKelas.equals("Pilih Hari")) {
                     JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -174,6 +178,13 @@ frame.add(btnDelete);
                     JOptionPane.showMessageDialog(frame, "Jadwal kelas berhasil disimpan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     loadData.run();
                     
+                    // Reset form
+                    txtNamaKelas.setText("");
+                    txtJamKelas.setText("");
+                    cbHari.setSelectedIndex(0);
+                    cbInstruktur.setSelectedIndex(0);
+                    txtIDKelas.setText("Auto");
+                    
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(frame, "Gagal menyimpan data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -185,7 +196,7 @@ frame.add(btnDelete);
             public void actionPerformed(ActionEvent e) {
                 String idKelas = txtIDKelas.getText().trim();
                 String namaKelas = txtNamaKelas.getText().trim();
-                String hariKelas = cbHari.getSelectedItem().toString();
+                String hariKelas = (String) cbHari.getSelectedItem();
                 String jamKelas = txtJamKelas.getText().trim();
                 String instrukturStr = (String) cbInstruktur.getSelectedItem();
                 
@@ -194,7 +205,8 @@ frame.add(btnDelete);
                     return;
                 }
                 
-                if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null) {
+                if (namaKelas.isEmpty() || jamKelas.isEmpty() || instrukturStr == null || 
+                    instrukturStr.equals("Pilih Instruktur") || hariKelas.equals("Pilih Hari")) {
                     JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -214,6 +226,7 @@ frame.add(btnDelete);
                     conn.close();
                     
                     JOptionPane.showMessageDialog(frame, "Data berhasil diupdate!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                    loadData.run();
                     
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(frame, "Gagal update data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -243,6 +256,14 @@ frame.add(btnDelete);
                         conn.close();
                         
                         JOptionPane.showMessageDialog(frame, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                        loadData.run();
+                        
+                        // Reset form
+                        txtIDKelas.setText("Auto");
+                        txtNamaKelas.setText("");
+                        txtJamKelas.setText("");
+                        cbHari.setSelectedIndex(0);
+                        cbInstruktur.setSelectedIndex(0);
                         
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame, "Gagal menghapus data!\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
