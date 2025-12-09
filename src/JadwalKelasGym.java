@@ -158,6 +158,18 @@ public class JadwalKelasGym {
                     JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+
+                if (jamKelas.length() != 8 || 
+    jamKelas.charAt(2) != ':' || 
+    jamKelas.charAt(5) != ':') {
+
+    JOptionPane.showMessageDialog(frame,
+        "Format waktu harus HH:MM:SS, contoh 07:30:00",
+        "Format Waktu Salah",
+        JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
                 
                 int idInstruktur = Integer.parseInt(instrukturStr.split(" - ")[0]);
                 
@@ -207,6 +219,18 @@ public class JadwalKelasGym {
                     JOptionPane.showMessageDialog(frame, "Semua field harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+
+                if (jamKelas.length() != 8 || 
+    jamKelas.charAt(2) != ':' || 
+    jamKelas.charAt(5) != ':') {
+
+    JOptionPane.showMessageDialog(frame,
+        "Format waktu harus HH:MM:SS, contoh 07:30:00",
+        "Format Waktu Salah",
+        JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
                 
                 int idInstruktur = Integer.parseInt(instrukturStr.split(" - ")[0]);
                 
