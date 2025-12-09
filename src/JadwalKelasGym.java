@@ -11,9 +11,9 @@ public class JadwalKelasGym {
     public static void main(String[] args) {
 
         Color CREAM   = new Color(250, 240, 230);
-        Color HIJAU   = new Color(16, 185, 129);
-        Color ORANGE  = new Color(251, 146, 60);
-        Color MERAH   = new Color(244, 63, 94);
+        Color HIJAU   = new Color(0, 180, 120);
+        Color ORANGE  = new Color(255, 140, 0);
+        Color MERAH   = new Color(255, 60, 80);
         Color TEXT    = Color.WHITE;
 
         JFrame frame = new JFrame("Form 3 – Jadwal Kelas Gym"); 
