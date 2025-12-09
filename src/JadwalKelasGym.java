@@ -64,22 +64,22 @@ public class JadwalKelasGym {
         frame.add(cbInstruktur);
         
         JButton btnSimpan = new JButton("CREATE");
-        btnSimpan.setBounds(20, 230, 100, 30);
-        btnSimpan.setBackground(new Color(46, 204, 113)); 
-        btnSimpan.setForeground(Color.WHITE);
-        frame.add(btnSimpan);
+btnSimpan.setBounds(20, 230, 100, 30);
+btnSimpan.setBackground(new Color(16, 185, 129)); // Hijau Emerald
+btnSimpan.setForeground(Color.WHITE);
+frame.add(btnSimpan);
         
         JButton btnUpdate = new JButton("UPDATE");
-        btnUpdate.setBounds(130, 230, 100, 30);
-        btnUpdate.setBackground(new Color(52, 152, 219)); // Biru
-        btnUpdate.setForeground(Color.WHITE);
-        frame.add(btnUpdate);
+btnUpdate.setBounds(130, 230, 100, 30);
+btnUpdate.setBackground(new Color(251, 146, 60)); // Orange
+btnUpdate.setForeground(Color.WHITE);
+frame.add(btnUpdate);
         
         JButton btnDelete = new JButton("DELETE");
-        btnDelete.setBounds(240, 230, 100, 30);
-        btnDelete.setBackground(new Color(231, 76, 60)); // Merah
-        btnDelete.setForeground(Color.WHITE);
-        frame.add(btnDelete);
+btnDelete.setBounds(240, 230, 100, 30);
+btnDelete.setBackground(new Color(244, 63, 94)); // Merah Rose
+btnDelete.setForeground(Color.WHITE);
+frame.add(btnDelete);
         
         String[] kolom = {"ID Kelas", "Nama Kelas", "Hari", "Waktu", "Instruktur", "ID Instruktur"};
         DefaultTableModel model = new DefaultTableModel(kolom, 0);
