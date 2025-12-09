@@ -9,7 +9,7 @@ import src.KoneksiDatabase;
 
 public class JadwalKelasGym {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Form Jadwal Kelas Gym"); 
+        JFrame frame = new JFrame("Form 3 – Jadwal Kelas Gym"); 
         frame.setSize(900, 600);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
