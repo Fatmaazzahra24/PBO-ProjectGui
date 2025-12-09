@@ -368,7 +368,8 @@ public class PendaftaranKelasGym extends JFrame {
 
     private void muatDataTabel() {
         try {
-            modelTabel.setRowCount(0);
+            DefaultTableModel model = (DefaultTableModel) tabelPendaftaran.getModel();
+            model.setRowCount(0); // Kosongkan tabel
 
             String sql =
                 "SELECT p.id_pendaftaran, p.id_member, m.nama AS nama_member, " +
@@ -387,7 +388,7 @@ public class PendaftaranKelasGym extends JFrame {
             ResultSet hasil = perintah.executeQuery(sql);
 
             while (hasil.next()) {
-                modelTabel.addRow(new Object[]{
+                model.addRow(new Object[]{  // GANTI modelTabel jadi model
                     hasil.getInt("id_pendaftaran"),
                     hasil.getInt("id_member"),
                     hasil.getString("nama_member"),
@@ -503,6 +504,8 @@ public class PendaftaranKelasGym extends JFrame {
         if (!validasiInput()) return;
 
         try {
+            int idPendaftaran = Integer.parseInt(txtIdPendaftaran.getText());
+            
             String sql = "UPDATE pendaftaran_kelas SET id_member=?, id_kelas=?, " +
                         "tanggal_daftar=?, catatan=? WHERE id_pendaftaran=?";
             PreparedStatement pstmt = koneksi.prepareStatement(sql);
@@ -512,8 +515,8 @@ public class PendaftaranKelasGym extends JFrame {
             
             String catatan = txtCatatan.getText().trim();
             pstmt.setString(4, catatan.isEmpty() ? null : catatan);
-            pstmt.setInt(5, Integer.parseInt(txtIdPendaftaran.getText()));
-            
+            pstmt.setInt(5, idPendaftaran);
+                        
             int result = pstmt.executeUpdate();
             pstmt.close();
             
@@ -601,7 +604,7 @@ public class PendaftaranKelasGym extends JFrame {
         try {
             if (koneksi != null && !koneksi.isClosed()) {
                 koneksi.close();
-                System.out.println("✓ Koneksi database ditutup");
+                System.out.println("Koneksi database ditutup");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
