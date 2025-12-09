@@ -3,6 +3,7 @@ package src;
 import javax.swing.*; 
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.awt.Color;
 import java.sql.*;
 
 public class JadwalKelasGym {
@@ -11,6 +12,9 @@ public class JadwalKelasGym {
         frame.setSize(900, 600);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        Color creamMuda = new Color(250, 240, 230);
+        frame.getContentPane().setBackground(creamMuda);
         
         JLabel lblIDKelas = new JLabel("ID KELAS");
         lblIDKelas.setBounds(20, 20, 120, 25);
