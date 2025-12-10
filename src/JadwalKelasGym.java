@@ -15,11 +15,11 @@ public class JadwalKelasGym {
         Color MERAH   = new Color(255, 60, 80);
         Color TEXT    = Color.WHITE;
 
-        JFrame frame = new JFrame("Form 3 – Jadwal Kelas Gym"); 
+        JFrame frame = new JFrame("Form 3 - Jadwal Kelas Gym");
         frame.setSize(650, 500);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);  
+        frame.setLocationRelativeTo(null);
         frame.getContentPane().setBackground(CREAM);
 
         JLabel lblIDKelas = new JLabel("ID KELAS");
